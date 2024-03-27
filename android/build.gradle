@@ -88,5 +88,7 @@ repositories {
 
 dependencies {
   implementation project(':expo-modules-core')
+  //Import BACTrack SDK. And all libraries in the folder for that matter.
+  implementation fileTree(dir: "libs", include: ["*.jar"])
   implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:${getKotlinVersion()}"
 }

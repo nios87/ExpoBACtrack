@@ -3,6 +3,18 @@ package expo.modules.bactrack
 import expo.modules.kotlin.modules.Module
 import expo.modules.kotlin.modules.ModuleDefinition
 
+import BACtrackAPI.API.BACtrackAPI;
+import BACtrackAPI.API.BACtrackAPICallbacks;
+import BACtrackAPI.Constants.BACTrackDeviceType;
+import BACtrackAPI.Constants.BACtrackUnit;
+import BACtrackAPI.Constants.Errors;
+import BACtrackAPI.Exceptions.BluetoothLENotSupportedException;
+import BACtrackAPI.Exceptions.BluetoothNotEnabledException;
+import BACtrackAPI.Exceptions.LocationServicesNotEnabledException;
+
+
+private var mAPI: BACtrackAPI? = null
+
 class ExpoBacTrackModule : Module() {
   // Each module class must implement the definition function. The definition consists of components
   // that describes the module's functionality and behavior.
@@ -23,7 +35,7 @@ class ExpoBacTrackModule : Module() {
 
     // Defines a JavaScript synchronous function that runs the native code on the JavaScript thread.
     Function("hello") {
-      "Hello world! 👋"
+      "Hello world, or something else 👋"
     }
 
     // Defines a JavaScript function that always returns a Promise and whose native code
