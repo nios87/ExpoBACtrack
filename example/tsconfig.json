@@ -1,0 +1,10 @@
+{
+  "extends": "expo/tsconfig.base",
+  "compilerOptions": {
+    "strict": true,
+    "paths": {
+      "expo-bac-track": ["../src/index"],
+      "expo-bac-track/*": ["../src/*"]
+    }
+  }
+}
