@@ -2,6 +2,10 @@ export type ChangeEventPayload = {
   value: string;
 };
 
-export type ExpoBacTrackViewProps = {
-  name: string;
+export type BacTrackConnectionEventPayload = {
+  mIsConnected: boolean;
+  mBatteryLevel: number;
+  mIsConnecting: boolean;
+  mIsScanning: boolean;
 };
+
