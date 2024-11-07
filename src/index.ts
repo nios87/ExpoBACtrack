@@ -7,7 +7,10 @@ import {
 // Import the native module. On web, it will be resolved to ExpoBacTrack.web.ts
 // and on native platforms to ExpoBacTrack.ts
 import {
+  BacTrackBlowPayload,
   BacTrackConnectionEventPayload,
+  BacTrackCountdownPayload,
+  BacTrackResultPayload,
   ChangeEventPayload,
 } from "./ExpoBacTrack.types";
 import ExpoBacTrackModule from "./ExpoBacTrackModule";
@@ -19,12 +22,16 @@ export function hello(): string {
   return ExpoBacTrackModule.hello();
 }
 
-export function init(): string {
-  return ExpoBacTrackModule.init();
+export function init(apiKey: string): string {
+  return ExpoBacTrackModule.init(apiKey);
 }
 
 export function connectToNearest(): string {
   return ExpoBacTrackModule.connectToNearest();
+}
+
+export function startCountdown(): string {
+  return ExpoBacTrackModule.startCountdown();
 }
 
 export async function setValueAsync(value: string) {
@@ -55,6 +62,36 @@ export function addBACtrackConnectionListener(
     "onBacTrackConnection",
     listener
   );
+}
+
+export function addBACtrackBlowListener(
+  listener: (event: BacTrackBlowPayload) => void
+): Subscription {
+  return emitter.addListener<BacTrackBlowPayload>("onBacTrackBlow", listener);
+}
+
+export function addBACtrackCountdownListener(
+  listener: (event: BacTrackCountdownPayload) => void
+): Subscription {
+  return emitter.addListener<BacTrackCountdownPayload>(
+    "onBackTrackCountdown",
+    listener
+  );
+}
+
+export function addBACtrackResultListener(
+  listener: (event: BacTrackResultPayload) => void
+): Subscription {
+  return emitter.addListener<BacTrackResultPayload>(
+    "onBackTrackResult",
+    listener
+  );
+}
+
+export function addBACtrackAnalyzingListener(
+  listener: () => void
+): Subscription {
+  return emitter.addListener("onBacTrackAnalyzing", listener);
 }
 
 export type ThemeChangeEvent = {

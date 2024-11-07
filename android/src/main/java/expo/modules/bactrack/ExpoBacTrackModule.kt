@@ -40,7 +40,7 @@ class ExpoBacTrackModule : Module() {
         )
 
         // Defines event names that the module can send to JavaScript.
-        Events("onChange", "onChangeTheme", "onBacTrackConnection")
+        Events("onChange", "onChangeTheme", "onBacTrackConnection", "onBacTrackBlow", "onBackTrackCountdown", "onBackTrackResult", "onBacTrackAnalyzing")
 
         // Defines a JavaScript synchronous function that runs the native code on the JavaScript thread.
         Function("hello") {
@@ -63,18 +63,11 @@ class ExpoBacTrackModule : Module() {
             )
         }
 
-        Function("init") {
+        Function("init") { apiKey: String ->
             Log.d(TAG, "Initialize BACManager")
-            val apiKey = "22315d0c4f2f40968a9896382c5b21"
+            // val apiKey = "22315d0c4f2f40968a9896382c5b21"
             // val eventData: WritableMap = Arguments.createMap()
             // eventData.putString("event", "BacTrackError")
-            val eventData = bundleOf(
-                "connecting" to mIsConnecting,
-                "connected" to mIsConnected,
-                "scanning" to mIsScanning,
-                "batteryLevel" to mBatteryLevel
-            )
-             this@ExpoBacTrackModule.sendEvent("onChange", bundleOf("value" to "test"))
             try {
                 mAPI = BACtrackAPI(appContext.reactContext, mCallbacks, apiKey)
             } catch (e: BluetoothLENotSupportedException) {
@@ -110,8 +103,15 @@ class ExpoBacTrackModule : Module() {
                 mAPI?.connectToNearestBreathalyzer();
             }
         }
+
+        Function("startCountdown") {
+            Log.d(TAG, "startCountdown");
+            if (mAPI != null) {
+                mAPI?.startCountdown();
+            }
+        }
+
         Function("setTheme") { theme: String ->
-            Log.d(TAG, "setTheme");
             getPreferences().edit().putString("theme", theme).commit()
             this@ExpoBacTrackModule.sendEvent("onChangeTheme", bundleOf("theme" to theme))
         }
@@ -137,6 +137,7 @@ class ExpoBacTrackModule : Module() {
         )
         Log.d(TAG, "Sending Event")
         this@ExpoBacTrackModule.sendEvent("onBacTrackConnection", eventData)
+        // this@ExpoBacTrackModule.sendEvent("onChange", bundleOf("value" to "connection update"))
     }
 
     private val mCallbacks: BACtrackAPICallbacks = object : BACtrackAPICallbacks {
@@ -214,6 +215,12 @@ class ExpoBacTrackModule : Module() {
             // eventData.putString("event", "BacTrackCountdown")
             // eventData.putInt("countDown", currentCountdownCount)
             // sendComplexEvent(eventData)
+
+            val eventData = bundleOf(
+            "count" to currentCountdownCount
+            )
+            Log.d(TAG, "Sending count event")
+            this@ExpoBacTrackModule.sendEvent("onBackTrackCountdown", eventData)
         }
 
 
@@ -229,22 +236,26 @@ class ExpoBacTrackModule : Module() {
             //setStatus(R.string.TEXT_KEEP_BLOWING);
             Log.d(TAG, "BacTrackBlow")
             // sendSimpleEvent("BacTrackBlow")
+            val eventData = bundleOf(
+            "remaining" to breathVolumeRemaining
+            )
+            Log.d(TAG, "Sending blow event")
+            this@ExpoBacTrackModule.sendEvent("onBacTrackBlow", eventData)
         }
 
 
         override fun BACtrackAnalyzing() {
-            //setStatus(R.string.TEXT_ANALYZING);
             Log.d(TAG, "BacTrackAnalyzing")
-            // sendSimpleEvent("BacTrackAnalyzing")
+            this@ExpoBacTrackModule.sendEvent("onBacTrackAnalyzing")
         }
 
-
         override fun BACtrackResults(measuredBac: Float) {
-            //setStatus(getString(R.string.TEXT_FINISHED) + " " + measuredBac);
-            // val eventData: WritableMap = Arguments.createMap()
-            // eventData.putString("event", "BacTrackResults")
-            // eventData.putString("result", String.format("%.10f", measuredBac))
-            // sendComplexEvent(eventData)
+            val formattedBac = "%.10f".format(measuredBac)
+            val eventData = bundleOf(
+            "result" to formattedBac
+            )
+            Log.d(TAG, "Sending result event")
+            this@ExpoBacTrackModule.sendEvent("onBackTrackResult", eventData)
         }
 
 

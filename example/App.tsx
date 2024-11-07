@@ -33,6 +33,7 @@ export default function App() {
   useEffect(() => {
     const subscription = ExpoBacTrack.addThemeListener(
       ({ theme: newTheme }) => {
+        console.log("theme listener", theme);
         setTheme(newTheme);
       }
     );
@@ -82,7 +83,10 @@ export default function App() {
           }}
         />
       </View>
-      <Button title="Init" onPress={() => ExpoBacTrack.init()} />
+      <Button
+        title="Init"
+        onPress={() => ExpoBacTrack.init("22315d0c4f2f40968a9896382c5b21")}
+      />
 
       <Button
         title="setValueasync"
